@@ -19,9 +19,9 @@ var data = [
         description: "Gold-plated, diamond-studded King", price: 1200 }
 ]
 module.exports = function () {
-    return {
-        products: data,
-        categories: [...new Set(data.map(p => p.category))].sort(),
-        orders: []
-    }
+  return {
+    products: data,
+    categories: [...new Set(data.map(p => p.category))].sort(),
+    orders: []
+  }
 }
