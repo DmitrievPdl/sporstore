@@ -18,22 +18,46 @@ export default new Vuex.Store({
     products: testData,
 		productsTotal: testData.length,
 		currentPage: 1,
-		pageSize: 4
+		pageSize: 4,
+		currentCategory: "All"
   },
 	getters: {
-		processedProducts: state => {
-			let index = (state.currentPage - 1) * state.pageSize;
-			return state.products.slice(index, index + state.pageSize);
-		},
-		pageCount: state => Math.ceil(state.productsTotal / state.pageSize)
+		productsFilteredByCategory: state => state.products
+			.filter(
+				// without sorting if currentCategoru == "All"
+				p => state.currentCategory == "All"
+				// else sort by category 
+				|| p.category == state.currentCategory
+			),
+
+		processedProducts: (state, getters) => {
+			let index = (state.currentPage -1) * state.pageSize;
+      return getters.productsFilteredByCategory.slice(
+				index, index + state.pageSize);
+    },
+
+		pageCount: (state, getters) =>
+			Math.ceil(getters.productsFilteredByCategory.length / state.pageSize),
+
+    categories: state => [
+			"All", ...new Set(state.products.map(p => p.category).sort())
+		],
+
 	},
 	mutations: {
 		setCurrentPage(state, page) {
 			state.currentPage = page;
 		},
+
 		setPageSize(state, size) {
 			state.pageSize = size;
 			state.currentPage = 1;
-		}
+		},
+
+		setCurrentCategory(state, category) {
+			state.currentCategory = category;
+			state.currentPage = 1;
+		},
+
 	}
 })
